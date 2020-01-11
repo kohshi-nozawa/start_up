@@ -1,3 +1,7 @@
+## /User/**username**/にリポジトリにあるファイル（README.md意外）を全てコピー
+ファイルは全て先頭に「.」つけてRenameすること。
+<br>※隠しファイルにしないように「.」をとってあるため
+
 ## スクリーンショットの形式・保存先・ファイル名を変更
 ```bash
 defaults write com.apple.screencapture type jpg #拡張子をjpegに変更

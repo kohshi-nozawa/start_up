@@ -36,6 +36,40 @@ function ff() {
 function grepff {
     grep -rl "$1" . --include="*.$2"
 }
+function mkvenv {
+    if [ -n "$1" ]; then
+      $1 -m venv venv
+    else
+      python3 -m venv venv
+    fi
+    source venv/bin/activate
+}
+function venv {
+    if [ $1 = "on" ] ; then
+      source venv/bin/activate
+    elif [ $1 = "off" ] ; then
+      deactivate
+    fi
+}
+function readline {
+  if [ $# -eq 2 ]; then
+    while read line
+      do
+      if [ -n "$line" ]; then
+        $1
+      fi
+    done < $2
+  else
+    echo -e "**usage** \\nFirst argument = Command \\nSecound argument = readfile \\n\$line = readline"
+  fi
+}
+function efind {
+  if [ $# -eq 2 ]; then
+    find $1 -name $2
+  else
+    echo "**usage** \\nFirst argument = search dir \\nSecound argument = search text"
+  fi
+}
 
 #terminal setting PS1
 function parse_git_branch {

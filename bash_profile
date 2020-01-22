@@ -11,8 +11,6 @@ export PATH=/usr/local/Cellar/git/2.21.0/bin:$PATH
 # Shortcut
 alias sbp='source ~/.bash_profile'
 alias vbp='vi ~/.bash_profile'
-alias cd_muji='cd ~/Document/muji/01_code'
-alias server='node ~/Document/muji/01_code/http_server.js'
 alias rmd='rm -ri'
 alias rn='rename -s'
 alias wd='--word-diff-regex="\w+"'
@@ -35,6 +33,14 @@ function ff() {
 }
 function grepff {
     grep -rl "$1" . --include="*.$2"
+}
+function mkshell {
+    if [ -n "$1" ]; then
+      touch $1.sh
+      echo "#!/bin/bash" > $1.sh
+    else
+      echo "error:Please enter a file name"
+    fi
 }
 function mkvenv {
     if [ -n "$1" ]; then

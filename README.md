@@ -46,3 +46,10 @@ fi
         #直前のcommitを取り消す（変更を保持しない）
         reset-h = reset --hard HEAD^
 ```
+
+
+## Macの充電音off設定（macOS Catalina以降）
+```bash
+defaults write com.apple.PowerChime ChimeOnNoHardware -bool true
+killall PowerChime
+```

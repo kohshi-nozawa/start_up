@@ -77,30 +77,38 @@ function efind {
   fi
 }
 function comp {
-  echo '圧縮形式（拡張子）を小文字で入力してください'
-  read key
-  case "$key" in
-    "zip" ) zip $1 ${2};;
-    "gzip" | "gz" ) tar -cf $1 ${2}\; gzip $1;;
-    "Z" ) tar -cf $1 ${2}\; compress $1;;
-    "bz2" | "bzip2" ) tar -cf $1 ${2}\; bzip2 $1;;
-    "tar.gz" | "tgz" ) tar -cfz $1 ${2};;
-    "tar.Z" | "taz" ) tar -cfZ $1 ${2};;
-    "tar.bz2" | "tbz2" ) tar -cfj $1 ${2};;
-  esac
+  if [ $# -gt 2 ]; then
+    echo '圧縮形式（拡張子）を小文字で入力してください'
+    read key
+    case "$key" in
+      "zip" ) zip $1 ${2};;
+      "gzip" | "gz" ) tar -cf $1 ${2}\; gzip $1;;
+      "Z" ) tar -cf $1 ${2}\; compress $1;;
+      "bz2" | "bzip2" ) tar -cf $1 ${2}\; bzip2 $1;;
+      "tar.gz" | "tgz" ) tar -cfz $1 ${2};;
+      "tar.Z" | "taz" ) tar -cfZ $1 ${2};;
+      "tar.bz2" | "tbz2" ) tar -cfj $1 ${2};;
+    esac
+  else
+    echo -e '引数が指定されていません\n<使用方法>\ncomp 圧縮後ファイル名 圧縮対象ファイル1 ...'
+  fi
 }
 function uncomp {
-  echo '圧縮形式（拡張子）を小文字で入力してください'
-  read key
-  case "$key" in
-    "zip" ) unzip $1;;
-    "gzip" | "gz" ) gzip -d $1;;
-    "Z" ) uncompress -d $1;;
-    "bz2" | "bzip2" ) bzip2 -d $1;;
-    "tar.gz" | "tgz" ) tar + gzip $1;;
-    "tar.Z" | "taz" ) tar -xfZ $1;;
-    "tar.bz2" | "tbz2" ) tar -xfj $1;;
-  esac
+  if [ $# -eq 1 ]; then
+    echo '圧縮形式（拡張子）を小文字で入力してください'
+    read key
+    case "$key" in
+      "zip" ) unzip $1;;
+      "gzip" | "gz" ) gzip -d $1;;
+      "Z" ) uncompress -d $1;;
+      "bz2" | "bzip2" ) bzip2 -d $1;;
+      "tar.gz" | "tgz" ) tar + gzip $1;;
+      "tar.Z" | "taz" ) tar -xfZ $1;;
+      "tar.bz2" | "tbz2" ) tar -xfj $1;;
+    esac
+  else
+    echo -e '引数が不正です\n<使用方法>\nuncomp 解凍対象ファイル名'
+  fi
 }
 
 #terminal setting PS1

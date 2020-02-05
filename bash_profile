@@ -76,7 +76,7 @@ function efind {
     echo "**usage** \\nFirst argument = search dir \\nSecound argument = search text"
   fi
 }
-function compression {
+function comp {
   echo '圧縮形式（拡張子）を小文字で入力してください'
   read key
   case "$key" in
@@ -89,7 +89,7 @@ function compression {
     "tar.bz2" | "tbz2" ) tar -cfj $1 ${2};;
   esac
 }
-function uncompression {
+function uncomp {
   echo '圧縮形式（拡張子）を小文字で入力してください'
   read key
   case "$key" in

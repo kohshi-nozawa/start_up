@@ -48,7 +48,8 @@ fi
 ```
 
 
-## Macの充電音off設定（macOS Catalina以降）
+## Macの充電音off設定（macOS Catalina以降）  
+ターミナル上で以下のコマンドを入れる
 ```bash
 defaults write com.apple.PowerChime ChimeOnNoHardware -bool true
 killall PowerChime

@@ -1,0 +1,173 @@
+# プロンプトの表示設定
+PROMPT="%F{green}%n%f@%F{cyan}%~%f%# "
+
+# git ブランチ名を色付きで表示させるメソッド
+function rprompt-git-current-branch {
+  local branch_name st branch_status
+ 
+  if test -z $(git rev-parse --git-dir 2> /dev/null); then
+    # git 管理されていないディレクトリは何も返さない
+    return
+  fi
+  branch_name=`git rev-parse --abbrev-ref HEAD 2> /dev/null`
+  st=`git status 2> /dev/null`
+  if [[ -n `echo "$st" | grep "^nothing to"` ]]; then
+    # 全て commit されてクリーンな状態
+    branch_status="%F{magenta}"
+  elif [[ -n `echo "$st" | grep "^Untracked files"` ]]; then
+    # git 管理されていないファイルがある状態
+    branch_status="%F{red}?"
+  elif [[ -n `echo "$st" | grep "^Changes not staged for commit"` ]]; then
+    # git add されていないファイルがある状態
+    branch_status="%F{red}+"
+  elif [[ -n `echo "$st" | grep "^Changes to be committed"` ]]; then
+    # git commit されていないファイルがある状態
+    branch_status="%F{yellow}!"
+  elif [[ -n `echo "$st" | grep "^rebase in progress"` ]]; then
+    # コンフリクトが起こった状態
+    echo "%F{red}!(no branch or conflict)"
+    return
+  else
+    # 上記以外の状態の場合
+    branch_status="%F{blue}"
+  fi
+  # ブランチ名を色付きで表示する
+  echo "${branch_status}[$branch_name]"
+}
+ 
+# プロンプトが表示されるたびにプロンプト文字列を評価、置換する
+setopt prompt_subst
+ 
+# プロンプトの右側にメソッドの結果を表示させる
+RPROMPT='`rprompt-git-current-branch`'
+
+#git tab-completion setting
+fpath=(~/.zsh/completion $fpath)
+autoload -U compinit
+compinit -u
+
+# Alias
+alias sbp='source ~/.zprofile'
+alias vbp='vi ~/.zprofile'
+alias rmd='rm -ri'
+alias rn='rename -s'
+alias wd='--word-diff-regex="\w+"'
+alias chrome='open -a "Google Chrome"'
+alias Safari='open -a Safari'
+
+alias glp='npx gulp'
+alias glpw='npx gulp watch'
+
+alias st='git status'
+
+  #ls color
+  autoload -U compinit
+  compinit
+  export LSCOLORS=exfxcxdxbxegedabagacad
+  export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+  alias ls='ls -FG'
+  alias ll='ls -alFG'
+  alias gls="gls --color"
+  zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
+
+
+  # fpwd コマンドでファイルのある階層を検索
+  alias fpwd='find ./ | peco'
+  # fp コマンドでカレントディレクトリ以下のファイルを絞り込んだ後に ppt で開く
+  alias ppt='open -a /Applications/Microsoft\ PowerPoint.app'
+  function find_ppt() {
+  local selected_file="$(find . -type f | grep ppt | peco)"
+  if [ -n "$selected_file" ]; then
+  ppt $selected_file
+  fi
+  }
+  alias fp="find_ppt"
+  # fe コマンドでカレントディレクトリ以下のファイルを絞り込んだ後に excel で開く
+  alias excel='open -a /Applications/Microsoft\ Excel.app'
+  function find_excel() {
+  local selected_file="$(find . -type f | grep xls | peco)"
+  if [ -n "$selected_file" ]; then
+  excel $selected_file
+  fi
+  }
+  alias fe="find_excel"
+
+  #sd コマンドでディレクトリを選択して移動する
+  function peco-cd {
+  local sw="1"
+  while [ "$sw" != "0" ]
+   do
+		if [ "$sw" = "1" ];then
+			local list=$(echo -e "---$PWD\n../\n$( ls -F | grep / )\n---Show hidden directory\n---Show files, $(echo $(ls -F | grep -v / ))\n---HOME DIRECTORY")
+		elif [ "$sw" = "2" ];then
+			local list=$(echo -e "---$PWD\n$( ls -a -F | grep / | sed 1d )\n---Hide hidden directory\n---Show files, $(echo $(ls -F | grep -v / ))\n---HOME DIRECTORY")
+		else
+			local list=$(echo -e "---BACK\n$( ls -F | grep -v / )")
+		fi
+		
+		local slct=$(echo -e "$list" | peco )
+		
+		if [ "$slct" = "---$PWD" ];then
+			local sw="0"
+		elif [ "$slct" = "---Hide hidden directory" ];then
+			local sw="1"
+		elif [ "$slct" = "---Show hidden directory" ];then
+			local sw="2"
+		elif [ "$slct" = "---Show files, $(echo $(ls -F | grep -v / ))" ];then
+			local sw=$(($sw+2))
+		elif [ "$slct" = "---HOME DIRECTORY" ];then
+			cd "$HOME"
+		elif [[ "$slct" =~ / ]];then
+			cd "$slct"
+		elif [ "$slct" = "" ];then
+			:
+		else
+			local sw=$(($sw-2))
+		fi
+   done
+  }
+  alias sd='peco-cd'
+
+
+#Shortcut function
+function cpfl() {
+    cat $1 | pbcopy
+}
+function ff() {
+    find . -name "$1" -ls;
+}
+function grepff {
+    grep -rl "$1" . --include="*.$2"
+}
+function mkshell {
+    if [ -n "$1" ]; then
+      touch $1.sh
+      echo "#!/bin/bash" > $1.sh
+    else
+      echo "error:Please enter a file name"
+    fi
+}
+function mkvenv {
+    if [ -n "$1" ]; then
+      $1 -m venv venv
+    else
+      python3 -m venv venv
+    fi
+    source venv/bin/activate
+}
+function venv {
+    if [ $1 = "on" ] ; then
+      source venv/bin/activate
+    elif [ $1 = "off" ] ; then
+      deactivate
+    fi
+}
+function gbip {
+    if [ $1 = "-l" ];then
+      curl inet-ip.info
+    else
+      curl -s inet-ip.info | pbcopy
+      echo "Successfully copied global IP."
+      pbpaste
+    fi
+}
